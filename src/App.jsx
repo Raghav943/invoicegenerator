@@ -1,5 +1,5 @@
-import { useState, useRef, useCallback } from "react";
-
+import { useState, useRef, useEffect } from "react";
+const STORAGE_KEY = "invoice-generator-data";
 function generateInvoiceNumber() {
   return "INV-" + Date.now().toString().slice(-6);
 }
@@ -187,6 +187,7 @@ function InvoicePreview({ data, fmt, formatDate, isInternational, gstEnabled, gs
 export default function InvoiceGenerator() {
   const [mobilePreviewOpen, setMobilePreviewOpen] = useState(false);
   const [isPrinting, setIsPrinting] = useState(false);
+  const [pdfLoading, setPdfLoading] = useState(false);
 
   const [businessName, setBusinessName] = useState("");
   const [businessEmail, setBusinessEmail] = useState("");
@@ -232,6 +233,23 @@ export default function InvoiceGenerator() {
   const [signatureName, setSignatureName] = useState("");
   const [notes, setNotes] = useState("");
   const [shareToast, setShareToast] = useState(false);
+  const [saveStatus, setSaveStatus] = useState("Saved locally");
+  const [openSections, setOpenSections] = useState({
+  business: true,
+  client: true,
+  invoice: true,
+  items: true,
+  payment: false,
+  notes: false,
+  footer: false,
+});
+
+const toggleSection = (section) => {
+  setOpenSections(prev => ({
+    ...prev,
+    [section]: !prev[section]
+  }));
+};
 
   const cur = CURRENCIES.find(c => c.code === currency) || CURRENCIES[0];
   const isInternational = currency !== "INR";
@@ -261,10 +279,186 @@ export default function InvoiceGenerator() {
     }
   };
   const handleDownloadPDF = () => {
+
+  setPdfLoading(true);
+
+  setTimeout(() => {
+
     setIsPrinting(true);
-    setTimeout(() => { window.print(); setIsPrinting(false); }, 100);
+
+    setTimeout(() => {
+      window.print();
+
+      setIsPrinting(false);
+
+      setTimeout(() => {
+        setPdfLoading(false);
+      }, 500);
+
+    }, 120);
+
+  }, 400);
+
+};
+
+  useEffect(() => {
+  const savedData = localStorage.getItem(STORAGE_KEY);
+
+  if (savedData) {
+    try {
+      const parsed = JSON.parse(savedData);
+
+      setBusinessName(parsed.businessName || "");
+      setBusinessEmail(parsed.businessEmail || "");
+      setBusinessPhone(parsed.businessPhone || "");
+      setBusinessAddress(parsed.businessAddress || "");
+      setGstNumber(parsed.gstNumber || "");
+
+      setClientName(parsed.clientName || "");
+      setClientEmail(parsed.clientEmail || "");
+      setClientAddress(parsed.clientAddress || "");
+
+      setInvoiceDate(parsed.invoiceDate || new Date().toISOString().split("T")[0]);
+      setDueDate(parsed.dueDate || "");
+      setCurrency(parsed.currency || "INR");
+
+      setItems(parsed.items || [{ id: 1, description: "", quantity: 1, rate: 0 }]);
+
+      setGstEnabled(parsed.gstEnabled || false);
+      setGstRate(parsed.gstRate || 18);
+
+      setUpiId(parsed.upiId || "");
+      setShowUpiQr(parsed.showUpiQr || false);
+
+      setBankName(parsed.bankName || "");
+      setAccountNumber(parsed.accountNumber || "");
+      setIfsc(parsed.ifsc || "");
+      setAccountHolder(parsed.accountHolder || "");
+
+      setPaypalEmail(parsed.paypalEmail || "");
+      setWiseEmail(parsed.wiseEmail || "");
+      setSwiftCode(parsed.swiftCode || "");
+      setIbanNumber(parsed.ibanNumber || "");
+      setIntlBankName(parsed.intlBankName || "");
+      setIntlAccountHolder(parsed.intlAccountHolder || "");
+
+      setThankYouNote(parsed.thankYouNote || "");
+      setTermsEnabled(parsed.termsEnabled ?? true);
+      setTermsText(parsed.termsText || "");
+
+      setSignatureEnabled(parsed.signatureEnabled || false);
+      setSignatureImg(parsed.signatureImg || null);
+      setSignatureName(parsed.signatureName || "");
+
+      setNotes(parsed.notes || "");
+    } catch (error) {
+      console.error("Failed to load saved invoice data", error);
+    }
+  }
+}, []);
+
+useEffect(() => {
+  const dataToSave = {
+    businessName,
+    businessEmail,
+    businessPhone,
+    businessAddress,
+    gstNumber,
+
+    clientName,
+    clientEmail,
+    clientAddress,
+
+    invoiceDate,
+    dueDate,
+    currency,
+
+    items,
+
+    gstEnabled,
+    gstRate,
+
+    upiId,
+    showUpiQr,
+
+    bankName,
+    accountNumber,
+    ifsc,
+    accountHolder,
+
+    paypalEmail,
+    wiseEmail,
+    swiftCode,
+    ibanNumber,
+    intlBankName,
+    intlAccountHolder,
+
+    thankYouNote,
+    termsEnabled,
+    termsText,
+
+    signatureEnabled,
+    signatureImg,
+    signatureName,
+
+    notes
   };
 
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+
+  setSaveStatus("Saved locally");
+
+  const timer = setTimeout(() => {
+    setSaveStatus("Auto-saving...");
+  }, 1200);
+
+  return () => clearTimeout(timer);
+
+}, [
+  businessName,
+  businessEmail,
+  businessPhone,
+  businessAddress,
+  gstNumber,
+
+  clientName,
+  clientEmail,
+  clientAddress,
+
+  invoiceDate,
+  dueDate,
+  currency,
+
+  items,
+
+  gstEnabled,
+  gstRate,
+
+  upiId,
+  showUpiQr,
+
+  bankName,
+  accountNumber,
+  ifsc,
+  accountHolder,
+
+  paypalEmail,
+  wiseEmail,
+  swiftCode,
+  ibanNumber,
+  intlBankName,
+  intlAccountHolder,
+
+  thankYouNote,
+  termsEnabled,
+  termsText,
+
+  signatureEnabled,
+  signatureImg,
+  signatureName,
+
+  notes
+]);
   const previewData = {
     businessName, businessEmail, businessPhone, businessAddress, gstNumber, logo,
     clientName, clientEmail, clientAddress, invoiceNumber, invoiceDate, dueDate, cur,
@@ -307,6 +501,10 @@ export default function InvoiceGenerator() {
           cursor: pointer; font-weight: 600; transition: all 0.2s;
         }
         .btn-primary:hover { background: #d6b55e; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(201,168,76,0.3); }
+        .btn-primary:disabled {
+  transform: none !important;
+  box-shadow: none !important;
+}
 
         /* Mobile preview button */
         .btn-preview-mobile {
@@ -356,6 +554,43 @@ export default function InvoiceGenerator() {
 
         /* ── CARDS (form side) ── */
         .card { background: #111117; border: 1px solid #1e1e28; border-radius: 14px; padding: 24px 28px; margin-bottom: 12px; }
+        
+        
+        .accordion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  padding-bottom: 2px;
+}
+
+.accordion-chevron {
+  color: #4d4d56;
+  font-size: 0.9rem;
+  transition: transform 0.25s ease;
+}
+
+.accordion-chevron.open {
+  transform: rotate(180deg);
+}
+
+.accordion-content {
+  overflow: hidden;
+  transition: all 0.28s ease;
+}
+
+.accordion-content.closed {
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+}
+
+.accordion-content.open {
+  max-height: 3000px;
+  opacity: 1;
+  margin-top: 18px;
+}
         .section-label { font-size: 0.76rem; font-weight: 600; color: #38383f; letter-spacing: 0; text-transform: none; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
         .section-label::after { content: ''; flex: 1; height: 1px; background: #1e1e28; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
@@ -436,7 +671,60 @@ export default function InvoiceGenerator() {
         }
 
         /* ── RESPONSIVE ── */
+        /* ── MOBILE ACTION BAR ── */
+
+.mobile-action-bar {
+  display: none;
+}
+
+.mobile-action {
+  flex: 1;
+  border: none;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mobile-action.primary {
+  background: #c9a84c;
+  color: #0c0c10;
+}
+
+.mobile-action.primary:hover {
+  background: #d6b55e;
+}
+
+.mobile-action.secondary {
+  background: #14141b;
+  color: #c8c4bc;
+  border: 1px solid #1e1e28;
+}
+
+.mobile-action.secondary:hover {
+  border-color: #30303e;
+}
         @media (max-width: 900px) {
+           .mobile-action-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(12,12,16,0.96);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid #1e1e28;
+  padding: 12px 14px;
+  display: flex;
+  gap: 10px;
+  z-index: 120;
+}
+
+.form-col {
+  padding-bottom: 110px;
+}
           .split { grid-template-columns: 1fr; }
           .preview-col { display: none; }
           .btn-preview-mobile { display: flex !important; }
@@ -456,10 +744,30 @@ export default function InvoiceGenerator() {
       {/* ── TOP BAR ── */}
       <div className="topbar no-print">
         <div className="topbar-logo">Invoice <span>Generator</span></div>
+        <div style={{
+  fontSize: "0.72rem",
+  color: "#4f8f62",
+  marginLeft: "auto",
+  marginRight: "14px",
+  fontWeight: 500
+}}>
+  ● {saveStatus}
+</div>
         <div className="topbar-right">
           <button className="btn-preview-mobile" onClick={() => setMobilePreviewOpen(true)}>👁 Preview</button>
           <button className="btn-ghost" onClick={handleShare}>Share</button>
-          <button className="btn-primary" onClick={handleDownloadPDF}>⬇ Download PDF</button>
+          <button
+  className="btn-primary"
+  onClick={handleDownloadPDF}
+  disabled={pdfLoading}
+  style={{
+    opacity: pdfLoading ? 0.7 : 1,
+    cursor: pdfLoading ? "not-allowed" : "pointer",
+    minWidth: "145px"
+  }}
+>
+  {pdfLoading ? "Preparing PDF..." : "⬇ Download PDF"}
+</button>
         </div>
       </div>
 
@@ -472,8 +780,22 @@ export default function InvoiceGenerator() {
         <div className="form-col">
 
           {/* Business */}
-          <div className="card">
-            <div className="section-label">Your Business</div>
+<div className="card">
+
+  <div
+    className="accordion-header"
+    onClick={() => toggleSection("business")}
+  >
+    <div className="section-label" style={{ marginBottom: 0 }}>
+      Your Business
+    </div>
+
+    <div className={`accordion-chevron ${openSections.business ? "open" : ""}`}>
+      ▼
+    </div>
+  </div>
+
+  <div className={`accordion-content ${openSections.business ? "open" : "closed"}`}>
             <div className="grid-2" style={{ gap: 14 }}>
               <div className="field" style={{ gridColumn: "1 / -1" }}>
                 <label>Business Logo</label>
@@ -492,20 +814,50 @@ export default function InvoiceGenerator() {
               <div className="field" style={{ gridColumn: "1 / -1" }}><label>Address</label><input value={businessAddress} onChange={e => setBusinessAddress(e.target.value)} placeholder="City, State, PIN" /></div>
             </div>
           </div>
+          </div>
 
           {/* Client */}
-          <div className="card">
-            <div className="section-label">Bill To</div>
+<div className="card">
+
+  <div
+    className="accordion-header"
+    onClick={() => toggleSection("client")}
+  >
+    <div className="section-label" style={{ marginBottom: 0 }}>
+      Bill To
+    </div>
+
+    <div className={`accordion-chevron ${openSections.client ? "open" : ""}`}>
+      ▼
+    </div>
+  </div>
+
+  <div className={`accordion-content ${openSections.client ? "open" : "closed"}`}>
             <div className="grid-3">
               <div className="field"><label>Client Name</label><input value={clientName} onChange={e => setClientName(e.target.value)} placeholder="Client or Company" /></div>
               <div className="field"><label>Client Email</label><input value={clientEmail} onChange={e => setClientEmail(e.target.value)} placeholder="client@example.com" type="email" /></div>
               <div className="field"><label>Location / Country</label><input value={clientAddress} onChange={e => setClientAddress(e.target.value)} placeholder="City, Country" /></div>
             </div>
           </div>
+          </div>
 
           {/* Invoice Details */}
-          <div className="card">
-            <div className="section-label">Invoice Details</div>
+<div className="card">
+
+  <div
+    className="accordion-header"
+    onClick={() => toggleSection("invoice")}
+  >
+    <div className="section-label" style={{ marginBottom: 0 }}>
+      Invoice Details
+    </div>
+
+    <div className={`accordion-chevron ${openSections.invoice ? "open" : ""}`}>
+      ▼
+    </div>
+  </div>
+
+  <div className={`accordion-content ${openSections.invoice ? "open" : "closed"}`}>
             <div className="grid-3">
               <div className="field"><label>Invoice Number</label><input value={invoiceNumber} readOnly style={{ opacity: 0.4 }} /></div>
               <div className="field"><label>Invoice Date</label><input type="date" value={invoiceDate} onChange={e => setInvoiceDate(e.target.value)} /></div>
@@ -519,10 +871,26 @@ export default function InvoiceGenerator() {
             </div>
             {isInternational && <div className="info-box" style={{ marginTop: 12 }}><strong>International invoice</strong> — GST disabled. Add international payment details below.</div>}
           </div>
+          </div>
 
           {/* Items */}
-          <div className="card">
-            <div className="section-label">Services & Items <span className="cur-badge">{cur.symbol} {cur.code}</span></div>
+<div className="card">
+
+  <div
+    className="accordion-header"
+    onClick={() => toggleSection("items")}
+  >
+    <div className="section-label" style={{ marginBottom: 0 }}>
+      Services & Items
+    </div>
+
+    <div className={`accordion-chevron ${openSections.items ? "open" : ""}`}>
+      ▼
+    </div>
+  </div>
+
+  <div className={`accordion-content ${openSections.items ? "open" : "closed"}`}>
+            <span className="cur-badge">{cur.symbol} {cur.code}</span></div>
             <div className="items-head">
               <span>Description</span><span>Qty</span><span>Rate</span><span style={{ textAlign: "right" }}>Amount</span><span></span>
             </div>
@@ -562,10 +930,24 @@ export default function InvoiceGenerator() {
               <div className="t-row grand"><span>Total</span><span className="val">{fmt(total)}</span></div>
             </div>
           </div>
+          </div>
 
           {/* Payment */}
           <div className="card">
-            <div className="section-label">Payment Details</div>
+            <div
+  className="accordion-header"
+  onClick={() => toggleSection("payment")}
+>
+  <div className="section-label" style={{ marginBottom: 0 }}>
+    Payment Details
+  </div>
+
+  <div className={`accordion-chevron ${openSections.payment ? "open" : ""}`}>
+    ▼
+  </div>
+</div>
+
+<div className={`accordion-content ${openSections.payment ? "open" : "closed"}`}>
             {!isInternational ? (
               <>
                 <div className="field" style={{ marginBottom: 10 }}>
@@ -615,19 +997,47 @@ export default function InvoiceGenerator() {
               </>
             )}
           </div>
+          </div>
 
           {/* Notes */}
           <div className="card">
-            <div className="section-label">Notes</div>
+            <div
+  className="accordion-header"
+  onClick={() => toggleSection("notes")}
+>
+  <div className="section-label" style={{ marginBottom: 0 }}>
+    Notes
+  </div>
+
+  <div className={`accordion-chevron ${openSections.notes ? "open" : ""}`}>
+    ▼
+  </div>
+</div>
+
+<div className={`accordion-content ${openSections.notes ? "open" : "closed"}`}>
             <div className="field">
               <label>Additional notes or payment terms</label>
               <textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="e.g. Payment due within 15 days." />
             </div>
           </div>
+          </div>
 
           {/* Footer */}
           <div className="card">
-            <div className="section-label">Invoice Footer</div>
+            <div
+  className="accordion-header"
+  onClick={() => toggleSection("footer")}
+>
+  <div className="section-label" style={{ marginBottom: 0 }}>
+    Invoice Footer
+  </div>
+
+  <div className={`accordion-chevron ${openSections.footer ? "open" : ""}`}>
+    ▼
+  </div>
+</div>
+
+<div className={`accordion-content ${openSections.footer ? "open" : "closed"}`}>
             <div className="field" style={{ marginBottom: 14 }}>
               <label>Thank you message</label>
               <textarea value={thankYouNote} onChange={e => setThankYouNote(e.target.value)} style={{ minHeight: 56 }} />
@@ -660,6 +1070,7 @@ export default function InvoiceGenerator() {
             )}
           </div>
         </div>
+        </div>
 
         {/* RIGHT — LIVE PREVIEW (desktop) */}
         <div className="preview-col">
@@ -671,9 +1082,26 @@ export default function InvoiceGenerator() {
             <InvoicePreview {...previewProps} compact={true} />
           </div>
         </div>
+      
+      {/* MOBILE STICKY ACTION BAR */}
+<div className="mobile-action-bar no-print">
 
-      </div>
+  <button
+    className="mobile-action secondary"
+    onClick={() => setMobilePreviewOpen(true)}
+  >
+    👁 Preview
+  </button>
 
+  <button
+    className="mobile-action primary"
+    onClick={handleDownloadPDF}
+    disabled={pdfLoading}
+  >
+    {pdfLoading ? "Preparing..." : "⬇ Download"}
+  </button>
+
+</div>
       {/* MOBILE MODAL PREVIEW */}
       {mobilePreviewOpen && (
         <div className="modal-overlay" onClick={() => setMobilePreviewOpen(false)}>
