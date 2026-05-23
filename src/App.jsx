@@ -237,7 +237,7 @@ export default function InvoiceGenerator() {
   const [openSections, setOpenSections] = useState({
   business: true,
   client: true,
-  invoice: true,
+  invoice: false,
   items: true,
   payment: false,
   notes: false,
@@ -484,10 +484,16 @@ useEffect(() => {
           border-bottom: 1px solid #1e1e28;
           padding: 12px 28px;
           display: flex; align-items: center; gap: 10px;
+          backdrop-filter: blur(14px);
+background: rgba(12,12,16,0.82);
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 18px;
         }
         .topbar-logo { font-family: 'DM Serif Display', serif; font-size: 1.1rem; font-weight: 400; color: #ede8e0; letter-spacing: -0.01em; margin-right: 8px; }
         .topbar-logo span { color: #c9a84c; }
-        .topbar-right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+        .topbar-right { margin-left: auto; display: flex; gap: 8px; align-items: center; gap: 10px; }
         .btn-ghost {
           padding: 7px 14px; border-radius: 8px; border: 1px solid #1e1e28;
           background: transparent; color: #56565e; font-family: 'Inter', sans-serif;
@@ -500,6 +506,9 @@ useEffect(() => {
           font-family: 'Inter', sans-serif; font-size: 0.8rem;
           cursor: pointer; font-weight: 600; transition: all 0.2s;
         }
+          .btn-primary:active {
+  transform: scale(0.98);
+}
         .btn-primary:hover { background: #d6b55e; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(201,168,76,0.3); }
         .btn-primary:disabled {
   transform: none !important;
@@ -514,25 +523,114 @@ useEffect(() => {
           font-family: 'Inter', sans-serif; font-size: 0.8rem;
           cursor: pointer; font-weight: 500;
         }
+        /* ── HERO SECTION ── */
 
+.hero-section {
+  padding: 46px 28px 26px;
+  border-bottom: 1px solid #1e1e28;
+  background:
+    radial-gradient(circle at top left, rgba(201,168,76,0.08), transparent 28%),
+    #0c0c10;
+    text-align: center;
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(201,168,76,0.08);
+  border: 1px solid rgba(201,168,76,0.16);
+  color: #b89a46;
+  font-size: 0.72rem;
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+
+.hero-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: #f5f1ea;
+  max-width: 760px;
+  margin-bottom: 14px;
+  font-weight: 400;
+}
+
+.hero-subtitle {
+  font-size: 1rem;
+  color: #8c8a84;
+  margin-bottom: 14px;
+  line-height: 1.7;
+  max-width: 620px;
+}
+
+.hero-trust {
+  font-size: 0.82rem;
+  color: #5d5c57;
+  line-height: 1.6;
+  max-width: 640px;
+}
         /* ── SPLIT LAYOUT ── */
-        .split { display: grid; grid-template-columns: 1fr 1fr; min-height: calc(100vh - 57px); }
+        .split { display: grid; grid-template-columns: 1fr 1fr; min-height: calc(100vh - 57px); padding-top: 22px; }
 
         /* Left — Form */
         .form-col {
           padding: 32px 28px 80px;
           overflow-y: auto;
           border-right: 1px solid #1e1e28;
+          padding-top: 12px;
         }
 
         /* Right — Live Preview */
         .preview-col {
+        position: relative;
+        padding-top: 12px;
           position: sticky; top: 57px;
           height: calc(100vh - 57px);
           overflow-y: auto;
           background: #0a0a0e;
           padding: 24px 20px;
         }
+          /* ── PREVIEW HEADER ── */
+
+.preview-header {
+  position: sticky;
+  top: 74px;
+  z-index: 20;
+
+  padding: 14px 18px;
+  margin-bottom: 18px;
+
+  border: 1px solid #1f1f28;
+  border-radius: 16px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.03),
+      rgba(255,255,255,0.015)
+    );
+
+  backdrop-filter: blur(12px);
+}
+
+.preview-header-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #ece7de;
+  margin-bottom: 4px;
+}
+
+.preview-header-subtitle {
+  font-size: 0.74rem;
+  color: #75736d;
+}
         .preview-col-inner {
           background: #fff;
           border-radius: 12px;
@@ -553,7 +651,11 @@ useEffect(() => {
         @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 
         /* ── CARDS (form side) ── */
-        .card { background: #111117; border: 1px solid #1e1e28; border-radius: 14px; padding: 24px 28px; margin-bottom: 12px; }
+        .card { background: #111117; border: 1px solid #20202a; border-radius: 14px; padding: 24px 28px; margin-bottom: 12px; background: linear-gradient(
+  180deg,
+  rgba(255,255,255,0.015),
+  rgba(255,255,255,0.01)
+); }
         
         
         .accordion-header {
@@ -563,12 +665,19 @@ useEffect(() => {
   cursor: pointer;
   user-select: none;
   padding-bottom: 2px;
+  padding: 4px 2px;
+border-radius: 10px;
+transition: background 0.2s ease;
+}
+.accordion-header:hover {
+  background: rgba(255,255,255,0.025);
 }
 
 .accordion-chevron {
-  color: #4d4d56;
+  color: #7b7b86;
   font-size: 0.9rem;
   transition: transform 0.25s ease;
+  font-weight: 700;
 }
 
 .accordion-chevron.open {
@@ -590,6 +699,7 @@ useEffect(() => {
   max-height: 3000px;
   opacity: 1;
   margin-top: 18px;
+  padding-top: 4px;
 }
         .section-label { font-size: 0.76rem; font-weight: 600; color: #38383f; letter-spacing: 0; text-transform: none; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
         .section-label::after { content: ''; flex: 1; height: 1px; background: #1e1e28; }
@@ -708,6 +818,9 @@ useEffect(() => {
   border-color: #30303e;
 }
         @media (max-width: 900px) {
+        .preview-header {
+  display: none;
+}
            .mobile-action-bar {
   position: fixed;
   bottom: 0;
@@ -732,6 +845,17 @@ useEffect(() => {
           .form-col { padding: 20px 16px 80px; border-right: none; }
         }
         @media (max-width: 640px) {
+        .hero-section {
+  padding: 34px 18px 22px;
+}
+
+.hero-title {
+  font-size: 2rem;
+}
+
+.hero-subtitle {
+  font-size: 0.92rem;
+}
           .grid-2, .grid-3 { grid-template-columns: 1fr; }
           .items-head { display: none; }
           .item-row { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; }
@@ -772,7 +896,27 @@ useEffect(() => {
       </div>
 
       {shareToast && <div className="toast">Link copied to clipboard</div>}
+       
+       {/* ── HERO SECTION ── */}
+<div className="hero-section no-print">
 
+  <div className="hero-badge">
+    Professional Invoice Generator
+  </div>
+
+  <h1 className="hero-title">
+    Create professional invoices in under 60 seconds.
+  </h1>
+
+  <p className="hero-subtitle">
+    Fast. Clean. No signup required.
+  </p>
+
+  <div className="hero-trust">
+    Trusted by freelancers, creators & remote professionals worldwide.
+  </div>
+
+</div>
       {/* ── SPLIT LAYOUT ── */}
       <div className="split">
 
@@ -1074,6 +1218,15 @@ useEffect(() => {
 
         {/* RIGHT — LIVE PREVIEW (desktop) */}
         <div className="preview-col">
+          <div className="preview-header no-print">
+  <div className="preview-header-title">
+    Live Invoice Preview
+  </div>
+
+  <div className="preview-header-subtitle">
+    Updates automatically as you edit.
+  </div>
+</div>
           <div className="preview-col-inner">
             <div className="preview-col-header">
               <span><span className="live-dot"></span>Live Preview</span>
