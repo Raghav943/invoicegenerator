@@ -491,7 +491,26 @@ align-items: center;
 justify-content: space-between;
 gap: 18px;
         }
-        .topbar-logo { font-family: 'DM Serif Display', serif; font-size: 1.1rem; font-weight: 400; color: #ede8e0; letter-spacing: -0.01em; margin-right: 8px; }
+        .topbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+
+  color: #f4efe6;
+  letter-spacing: -0.03em;
+}
+  .brand-icon {
+  color: #c9a84c;
+  font-size: 0.9rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
         .topbar-logo span { color: #c9a84c; }
         .topbar-right { margin-left: auto; display: flex; gap: 8px; align-items: center; gap: 10px; }
         .btn-ghost {
@@ -708,14 +727,32 @@ transition: background 0.2s ease;
         .field { display: flex; flex-direction: column; gap: 7px; }
         .field label { font-size: 0.72rem; color: #56565e; font-weight: 500; }
         input, textarea, select {
+        transition:
+  border-color 0.2s ease,
+  box-shadow 0.2s ease,
+  background 0.2s ease;
           background: #0e0e14; border: 1px solid #1e1e28; border-radius: 9px;
           padding: 10px 13px; color: #c8c4bc; font-family: 'Inter', sans-serif;
           font-size: 0.855rem; outline: none; transition: border-color 0.2s, box-shadow 0.2s;
           width: 100%; font-weight: 400; line-height: 1.5;
         }
-        input::placeholder, textarea::placeholder { color: #252530; }
+          .input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: rgba(201,168,76,0.42);
+
+  box-shadow:
+    0 0 0 4px rgba(201,168,76,0.06);
+
+  background: rgba(255,255,255,0.03);
+}
+        input::placeholder, textarea::placeholder {
+  color: #6f6f78;
+}
         input:focus, textarea:focus, select:focus { border-color: #30303e; box-shadow: 0 0 0 3px rgba(201,168,76,0.05); }
-        textarea { resize: vertical; min-height: 80px; line-height: 1.65; }
+        textarea { resize: vertical; min-height: 80px; line-height: 1.65; line-height: 1.7;
+resize: vertical; }
         select option { background: #111117; }
 
         .logo-area { border: 1px dashed #1e1e28; border-radius: 10px; padding: 18px; text-align: center; cursor: pointer; transition: all 0.2s; background: #0e0e14; }
@@ -867,7 +904,10 @@ transition: background 0.2s ease;
 
       {/* ── TOP BAR ── */}
       <div className="topbar no-print">
-        <div className="topbar-logo">Invoice <span>Generator</span></div>
+        <div className="topbar-logo">
+  <span className="brand-icon">◈</span>
+  Invoxa
+</div>
         <div style={{
   fontSize: "0.72rem",
   color: "#4f8f62",
