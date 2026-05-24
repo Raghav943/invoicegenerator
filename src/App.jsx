@@ -474,7 +474,7 @@ useEffect(() => {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap');
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: #0c0c10; color: #c8c4bc; font-family: 'Inter', sans-serif; min-height: 100vh; -webkit-font-smoothing: antialiased; line-height: 1.6; }
+        body { background: #0c0c10; color: #c8c4bc; font-family: 'Inter', sans-serif; min-height: 100vh; -webkit-font-smoothing: antialiased; line-height: 1.6; overflow-x: hidden; }
 
         /* ── TOP BAR ── */
         .topbar {
