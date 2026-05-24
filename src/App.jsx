@@ -864,24 +864,13 @@ resize: vertical; }
         .preview-header {
   display: none;
 }
-           .mobile-action-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: rgba(12,12,16,0.96);
-  backdrop-filter: blur(12px);
-  border-top: 1px solid #1e1e28;
-  padding: 12px 14px;
-  display: flex;
-  gap: 10px;
-  z-index: 120;
-}
 
-.form-col {
-  padding-bottom: 110px;
+          .split {
+  display: block !important;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
-          .split { grid-template-columns: 1fr; }
           .preview-col { display: none; }
           .btn-preview-mobile { display: flex !important; }
           .topbar { padding: 12px 18px; }
