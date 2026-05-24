@@ -887,9 +887,15 @@ resize: vertical; }
   }
 
   .topbar button {
-    flex: 1 1 auto;
-    min-width: 120px;
-  }
+  flex: 1 1 100%;
+  min-width: 0;
+}
+  .topbar-actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 
   .split {
     display: block !important;
