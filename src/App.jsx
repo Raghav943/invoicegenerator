@@ -876,7 +876,38 @@ resize: vertical; }
           .topbar { padding: 12px 18px; }
           .form-col { padding: 20px 16px 80px; border-right: none; }
         }
-        @media (max-width: 640px) {
+          @media (max-width: 900px) {
+
+  .topbar {
+    padding: 12px 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .topbar button {
+    flex: 1 1 auto;
+    min-width: 120px;
+  }
+
+  .split {
+    display: block !important;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .preview-col {
+    display: none;
+  }
+
+  .form-col {
+    width: 100%;
+    max-width: 100%;
+  }
+
+}
         .hero-section {
   padding: 34px 18px 22px;
 }
