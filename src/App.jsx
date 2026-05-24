@@ -596,7 +596,9 @@ align-items: center;
   max-width: 640px;
 }
         /* ── SPLIT LAYOUT ── */
-        .split { display: grid; grid-template-columns: 1fr 1fr; min-height: calc(100vh - 57px); padding-top: 22px; }
+        .split { display: grid; grid-template-columns: 1fr 1fr; min-height: calc(100vh - 57px); padding-top: 22px; width: 100%;
+max-width: 100%;
+overflow-x: hidden; }
 
         /* Left — Form */
         .form-col {
@@ -604,6 +606,8 @@ align-items: center;
           overflow-y: auto;
           border-right: 1px solid #1e1e28;
           padding-top: 12px;
+          min-width: 0;
+max-width: 100%;
         }
 
         /* Right — Live Preview */
@@ -615,6 +619,8 @@ align-items: center;
           overflow-y: auto;
           background: #0a0a0e;
           padding: 24px 20px;
+          min-width: 0;
+max-width: 100%;
         }
           /* ── PREVIEW HEADER ── */
 
