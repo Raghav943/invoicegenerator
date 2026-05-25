@@ -1113,8 +1113,14 @@ resize: vertical; }
             {items.map(item => (
               <div className="item-row" key={item.id}>
                 <input value={item.description} onChange={e => updateItem(item.id, "description", e.target.value)} placeholder="e.g. Logo Design, Web Development" />
-                <input type="number" min="1" value={item.quantity} onChange={e => updateItem(item.id, "quantity", e.target.value)} />
-                <input type="number" min="0" value={item.rate} onChange={e => updateItem(item.id, "rate", e.target.value)} placeholder="0" />
+                <div>
+  <div className="item-label">Qty</div>
+  <input type="number" min="1" value={item.quantity} onChange={e => updateItem(item.id, "quantity", e.target.value)} />
+</div>
+                <div>
+  <div className="item-label">Price</div>
+  <input type="number" min="0" value={item.rate} onChange={e => updateItem(item.id, "rate", e.target.value)} />
+</div>
                 <div className="item-amt">{cur.symbol}{(Number(item.quantity) * Number(item.rate)).toLocaleString("en-IN", { minimumFractionDigits: 2 })}</div>
                 <button className="btn-remove" onClick={() => removeItem(item.id)}>×</button>
               </div>

@@ -182,3 +182,9 @@
     border-right-color: var(--border);
   }
 }
+.item-label {
+  font-size: 0.72rem;
+  color: #9ca3af;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
