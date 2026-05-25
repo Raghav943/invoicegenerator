@@ -285,7 +285,7 @@ const toggleSection = (section) => {
 
   try {
 
-    const element = document.querySelector(".invoice-sheet");
+    const element = document.getElementById("invoice-preview");
 
     const opt = {
       margin: 0.5,
@@ -1318,7 +1318,7 @@ resize: vertical; }
     Updates automatically as you edit.
   </div>
 </div>
-          <div className="preview-col-inner">
+          <div className="preview-col-inner" id="invoice-preview">
             <div className="preview-col-header">
               <span><span className="live-dot"></span>Live Preview</span>
               <span style={{ fontSize: "0.68rem", color: "#38383f" }}>Updates as you type</span>
