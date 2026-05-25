@@ -905,8 +905,10 @@ resize: vertical; }
   }
 
   .preview-col {
-    display: none;
-  }
+  position: absolute;
+  left: -9999px;
+  top: 0;
+}
 
   .form-col {
     width: 100%;
