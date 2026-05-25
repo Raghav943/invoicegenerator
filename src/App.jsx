@@ -1320,7 +1320,7 @@ resize: vertical; }
 </div>
           <div className="preview-col-inner" id="invoice-preview">
             <div className="preview-col-header">
-              <span><span className="live-dot"></span>Live Preview</span>
+              <span>Invoice</span>
               <span style={{ fontSize: "0.68rem", color: "#38383f" }}>Updates as you type</span>
             </div>
             <InvoicePreview {...previewProps} compact={true} />
