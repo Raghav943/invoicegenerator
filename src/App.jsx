@@ -287,6 +287,7 @@ const toggleSection = (section) => {
     setIsPrinting(true);
 
     setTimeout(() => {
+      window.scrollTo(0, 0);
       window.print();
 
       setIsPrinting(false);
@@ -297,7 +298,7 @@ const toggleSection = (section) => {
 
     }, 120);
 
-  }, 400);
+  }, 800);
 
 };
 
