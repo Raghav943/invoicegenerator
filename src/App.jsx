@@ -1,3 +1,4 @@
+import html2pdf from "html2pdf.js";
 import { useState, useRef, useEffect } from "react";
 const STORAGE_KEY = "invoice-generator-data";
 function generateInvoiceNumber() {
@@ -278,28 +279,37 @@ const toggleSection = (section) => {
       navigator.clipboard.writeText(url).then(() => { setShareToast(true); setTimeout(() => setShareToast(false), 2500); });
     }
   };
-  const handleDownloadPDF = () => {
+  const handleDownloadPDF = async () => {
 
   setPdfLoading(true);
 
-  setTimeout(() => {
+  try {
 
-    setIsPrinting(true);
+    const element = document.querySelector(".invoice-sheet");
 
-    setTimeout(() => {
-      window.scrollTo(0, 0);
-      window.print();
+    const opt = {
+      margin: 0.5,
+      filename: `invoice-${invoiceNumber || "invoice"}.pdf`,
+      image: { type: "jpeg", quality: 1 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        scrollY: 0
+      },
+      jsPDF: {
+        unit: "in",
+        format: "a4",
+        orientation: "portrait"
+      }
+    };
 
-      setIsPrinting(false);
+    await html2pdf().set(opt).from(element).save();
 
-      setTimeout(() => {
-        setPdfLoading(false);
-      }, 500);
+  } catch (err) {
+    console.error(err);
+  }
 
-    }, 120);
-
-  }, 800);
-
+  setPdfLoading(false);
 };
 
   useEffect(() => {
